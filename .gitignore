@@ -154,3 +154,4 @@ modules.xml
 
 registered_client.json
 settings.json
+.DS_Store

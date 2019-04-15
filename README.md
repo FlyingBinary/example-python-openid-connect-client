@@ -10,6 +10,12 @@ $ python app.py
 Flask will start a web server listening on all interfaces that can be used for demo purposes. The webserver will use HTTPS with a certificate for localhost.
 Browse to https://localhost:5443 to see the app.
 
+## Changes for user api access
+
+Our user api has a custom url and requires authentication with a separate JSON web token (so, not the `back-end access token` suggested).
+
+After successful user authentication, find the `Request data from an API` section and press the `Using API Access Token` button.
+
 ## Dependencies
 
 **python 2.x** (tested with python 2.7.10)
