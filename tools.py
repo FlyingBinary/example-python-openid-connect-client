@@ -70,3 +70,28 @@ def get_ssl_context(config):
 def print_json(map):
     print json.dumps(map, indent=4, sort_keys=True)
 
+
+def get_item_from_json(json_tuple, part, item):
+    """
+
+    :param json_tuple: a tuple or single json encoded string
+    :param part: which part of the tuple, must be zero for single string
+    :param item: name of the item to extract
+    :return: value of the required item if found, else none
+    """
+    json_string = ""
+    if isinstance(json_tuple, tuple):
+        if part not in range(len(json_tuple)):
+            return None
+        json_string = json_tuple[part]
+    if isinstance(json_tuple, str):
+        if part != 0:
+            return None
+        json_string = json_tuple
+    if not json_string:
+        return None
+    try:
+        item_value = json.loads(json_string)[item]
+    except ValueError:
+        return None
+    return item_value

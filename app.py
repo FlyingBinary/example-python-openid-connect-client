@@ -24,8 +24,9 @@ from jwkest import BadSignature
 import tools
 from client import Client
 from config import Config
-from tools import decode_token, generate_random_string, print_json
+from tools import decode_token, generate_random_string, print_json, get_item_from_json
 from validator import JwtValidator
+from creator import JwtCreator
 
 _app = Flask(__name__)
 
@@ -250,10 +251,16 @@ def call_api():
 
                 return redirect_with_baseurl("/")
 
+            user_sub = get_item_from_json(user.id_token_json, 1, 'sub')
+            # req_string = _config['api_endpoint'] % user.id_token_json[1]['sub']
+            req_string = _config['api_endpoint'] % user_sub
+            bearer_map = { 'iss': _config['client_id'], 'aud': _config['api_audience']}
+            bearer_token = JwtCreator(bearer_map, 'HS256', _config).sign_compact()
+
             try:
-                req = urllib2.Request(_config['api_endpoint'])
+                req = urllib2.Request(req_string)
                 req.add_header('User-Agent', 'CurityExample/1.0')
-                req.add_header("Authorization", "Bearer %s" % access_token)
+                req.add_header("Authorization", "Bearer %s" % bearer_token)
                 req.add_header("Accept", 'application/json')
                 response = urllib2.urlopen(req, context=tools.get_ssl_context(_config))
                 user.api_response = {'code': response.code, 'data': response.read()}
