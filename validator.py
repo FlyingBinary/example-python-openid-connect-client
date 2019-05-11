@@ -42,8 +42,16 @@ class JwtValidator:
         header = json.loads(base64_urldecode(parts[0]))
         payload = json.loads(base64_urldecode(parts[1]))
 
-        if iss != payload['iss']:
-            raise JwtValidatorException("Invalid issuer %s, expected %s" % (payload['iss'], iss))
+        # FIXME: Microsoft returns {tenantid} in issuer, we must replace
+        _iss = iss
+        if '{tenantid}' in _iss:
+            if 'tid' in payload:
+                _iss = _iss.replace('{tenantid}', payload['tid'])
+            else:
+                raise JwtValidatorException("Tenant {tenantid} specified in issuer, but no tid in payload")
+
+        if _iss != payload['iss']:
+            raise JwtValidatorException("Invalid issuer %s, expected %s" % (payload['iss'], _iss))
 
         if payload["aud"]:
             if (isinstance(payload["aud"], str) and payload["aud"] != aud) or aud not in payload['aud']:
