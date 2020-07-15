@@ -444,7 +444,7 @@ if __name__ == '__main__':
 
     if debug:
         print 'Running conf:'
-        print_json(_config)
+        # print_json(_config)
 
     if _disable_https:
         _app.run('0.0.0.0', debug=debug, port=port)

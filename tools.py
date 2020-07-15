@@ -64,6 +64,14 @@ def get_ssl_context(config):
         print 'Not verifying ssl certificates'
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
+    if 'protocol' in config:
+        protocol_numbers = {v:k for k,v in ssl._PROTOCOL_NAMES.iteritems()}
+        if config['protocol'] in protocol_numbers:
+            print 'Setting protocol to %s' % config['protocol']
+            ctx.protocol = protocol_numbers[config['protocol']]
+        else:
+            print 'Unexpected protocol value %s' % config['protocol']
+            print 'Continuing with default value'
     return ctx
 
 

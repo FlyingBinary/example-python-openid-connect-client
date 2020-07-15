@@ -52,7 +52,16 @@ class Client:
         if 'issuer' in self.config:
             meta_data_url = self.config['issuer'] + '/.well-known/openid-configuration'
             print 'Fetching config from: %s' % meta_data_url
-            meta_data = urllib2.urlopen(meta_data_url, context=self.ctx)
+            try:
+                meta_data = urllib2.urlopen(meta_data_url, context=self.ctx)
+            except urllib2.URLError as url_error:
+                print "Cannot open url"
+                print "Error returned is: %s" % url_error
+                if 'protocol' in self.config:
+                    print "Protocol setting is %s" % self.config['protocol']
+                else:
+                    print "Protocol setting is default"
+                meta_data = bool(False)
             if meta_data:
                 self.config.update(json.load(meta_data))
             else:
@@ -308,7 +317,7 @@ class Client:
     def __urlopen(self, url, data=None, context=None, token=None):
         """
         Open a connection to the specified url. Sets valid requests headers.
-        :param url: url to open - cannot be a request object 
+        :param url: url to open - cannot be a request object
         :param data: data to send, optional
         :param context: ssl context
         :param token: token to add to the authorization header

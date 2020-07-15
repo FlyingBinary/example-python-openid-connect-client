@@ -28,6 +28,7 @@ class Config():
             'dcr_client_id',
             'dcr_client_secret',
             'debug',
+            'protocol',
             'disable_https',
             'discovery_url',
             'issuer',
